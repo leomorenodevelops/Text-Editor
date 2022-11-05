@@ -3,8 +3,6 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
-// TODO: Add CSS loaders and babel to webpack.
-
 module.exports = () => {
   return {
     mode: 'development',
@@ -52,8 +50,26 @@ module.exports = () => {
     ],
 
     module: {
+      // Add CSS loaders to webpack
       rules: [
-        
+        {
+          // Looks for and adds .css file into bundle.js file.
+          test: /\.css$/i,
+          // Additional modules for converting css in js
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.m?js$/,
+          exclude: /node_modules/,
+          // Add babel-loader to webpack in order to use ES6
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
+            },
+          },
+        },
       ],
     },
   };
